@@ -1,0 +1,124 @@
+-- Active: 1730402305231@@127.0.0.1@3306@csit355
+
+-- droping Tables
+DROP TABLE IF EXISTS Students;
+DROP TABLE IF EXISTS Courses;
+DROP TABLE IF EXISTS Prerequisites;
+DROP TABLE IF EXISTS Schedules;
+DROP TABLE IF EXISTS Professor;
+DROP TABLE IF EXISTS Teaching;
+DROP TABLE IF EXISTS Enrolled;
+
+--creating tables
+CREATE TABLE IF NOT EXISTS Students (
+                                      sid integer PRIMARY KEY,
+                                      sname varchar(20) NOT Null,
+                                      age integer);
+CREATE TABLE IF NOT EXISTS Courses (
+                                     cid integer PRIMARY KEY,
+                                     cname varchar(20),
+                                     credits integer);
+CREATE TABLE IF NOT EXISTS Enrolled (
+                                      sid integer,
+                                      cid integer,
+						    grade int,
+                                      foreign key (sid) references Students(sid) ,
+                                      foreign key (cid) references Courses(cid) ); 
+
+CREATE TABLE IF NOT EXISTS Schedules(
+                                       cid integer,
+                                       class_time varchar(20),
+                                       building varchar(20),
+                                       foreign key (cid) references Courses(cid)
+                                       );
+
+CREATE TABLE IF NOT EXISTS Professor(
+                                       pid integer PRIMARY KEY,
+                                       pname varchar(20),
+                                       department varchar(50),
+                                       email varchar(30)); 
+ 
+CREATE TABLE IF NOT EXISTS Teaching(
+                                       pid integer,
+                                       cid integer,
+                                       primary key (pid, cid),
+                                       foreign key (pid) references Professor(pid),
+                                       foreign key (cid) references Courses(cid)
+                                       );
+
+CREATE TABLE IF NOT EXISTS Prerequisites (
+    cid INTEGER,
+    prereq_cid INTEGER,
+    PRIMARY KEY (cid, prereq_cid),
+    FOREIGN KEY (cid) REFERENCES Courses (cid),
+    FOREIGN KEY (prereq_cid) REFERENCES Courses (cid)
+);
+
+--data for tables
+INSERT INTO Students (sid, sname, age) VALUES
+ (100, 'Kelly', 20),
+ (101, 'Brandon', 21),
+ (102, 'Nayam', 22),
+ (103, 'Jane', 21),
+ (104, 'Bob', 20);
+
+INSERT INTO Courses (cid, cname, credits) VALUES
+  (212, 'Data Structures', 4),
+  (213, 'Computer Networks', 3),
+  (214, 'Python', 2),
+  (215, 'Java', 2),
+  (313, 'Computer Languages', 2),
+  (315, 'Software Development', 4),
+  (355, 'Database Systems', 4),
+  (379, 'CS Theory', 2),
+  (415, 'Engineering', 4);
+
+INSERT INTO Enrolled (sid, cid, grade) VALUES
+(100, 315, 92),
+(100, 355, 100),
+(101, 415, 88),
+(101, 313, 93),
+(102, 355, 100),
+(102, 355, 71),
+(103, 415, 89),
+(103, 313, 100),
+(104, 355, 68),
+(104, 313, 74);
+
+INSERT INTO Schedules (cid, class_time, building) VALUES
+ (355, 'M 08:15:00', 'Computer Science'),
+ (315, 'TU 10:30:00', 'Business'),
+ (415, 'W 10:45:00', 'Susan Cole Hall'),
+ (379, 'FR 11:15:00', 'Dickson Hall'),
+ (313, 'M 09:30:00', 'Business'),
+ (212, 'TU 12:30:00', 'Business'),
+ (213, 'W 13:45:00', 'Susan Cole Hall'),
+ (214, 'FR 08:45:00', 'Richardson Hall'),
+ (215, 'FR 08:45:00', 'Dickson Hall');
+
+
+INSERT INTO Professor (pid, pname, department, email) VALUES
+ (200, 'Hao', 'Computer Science', 'lhao@montclair.edu'),
+ (201, 'Samuels', 'Business','rsamuels@montclair.edu'),
+ (202, 'Kazi', 'Environmental Science', 'hkazi@montclair.edu'),
+ (203, 'Jenq', 'Dickson Hall', 'jjenq@montclair.edu'),
+ (204, 'Coutras', 'Richardson Hall', 'mcoutras@montclair.edu'),
+ (205, 'Kong', 'Susan Cole Hall', 'ykong@montclair.edu');
+
+INSERT INTO Teaching (pid, cid) VALUES
+ (200, 355),
+(201, 315),
+(201, 313),
+(203, 379),
+(204, 313),
+(205, 355),
+(205, 415),
+(205, 313),
+(205, 379);
+
+INSERT INTO Prerequisites (cid, prereq_cid) VALUES
+ (313, 212),
+ (315, 213),
+ (355, 214),
+ (379, 215),
+ (415, 379);
